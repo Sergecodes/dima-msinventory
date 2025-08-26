@@ -1,0 +1,11 @@
+﻿Priority,Order Reference,Vendor,Purchase Representative,Order Deadline,Activities,Source Document,Total,Status
+Normal,P06813,Azure Interior,Admin,2022-11-02 13:01:53,,,75.25,Purchase Order
+Normal,P06811,Amigos (Billingham),Admin,2022-11-02 12:50:30,,,13.13,Purchase Order
+Normal,P06810,Azure Interior,Admin,2022-11-01 22:03:15,,,6.32,RFQ
+Normal,P00007,Ready Mat,Admin,2022-08-08 15:59:33,Check competitors,,1222.5,Purchase Order
+Normal,P00006,Wood Corner,Admin,2022-08-08 15:59:33,Check optional products,,1335,Purchase Order
+Normal,P00005,Deco Addict,Admin,2022-08-08 15:59:33,Get approval,,8658,RFQ Sent
+Normal,P00004,Ready Mat,Admin,2022-08-08 15:59:32,,,14563,Cancelled
+Normal,P00003,Azure Interior,Admin,2022-08-08 15:59:32,,,255,Locked
+Normal,P00002,Gemini Furniture,Admin,2022-08-08 15:59:32,Send specifications,,3095,Purchase Order
+Normal,P00001,Wood Corner,Admin,2022-08-08 15:59:32,,,3026.5,Cancelled

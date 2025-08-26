@@ -1,0 +1,25 @@
+# Obtain token (use superuser credentials)
+curl -X POST http://127.0.0.1:8000/api/token/ -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"<yourpass>"}'
+
+# Use the access token:
+AUTH="Authorization: Bearer <ACCESS_TOKEN>"
+
+# Create a location
+curl -X POST http://127.0.0.1:8000/api/locations/ -H "$AUTH" -H "Content-Type: application/json" \
+  -d '{"code":"MAIN","name":"Main Warehouse"}'
+
+# Create a product (if you didn’t import)
+curl -X POST http://127.0.0.1:8000/api/products/ -H "$AUTH" -H "Content-Type: application/json" \
+  -d '{"sku":"FURN_1118","name":"Corner Desk Left Sit"}'
+
+# INBOUND move +10 to MAIN
+curl -X POST http://127.0.0.1:8000/api/stock-moves/ -H "$AUTH" -H "Content-Type: application/json" \
+  -d '{"type":"INBOUND","product":1,"qty":"10","to_location":1}'
+
+# OUTBOUND move -3 from MAIN
+curl -X POST http://127.0.0.1:8000/api/stock-moves/ -H "$AUTH" -H "Content-Type: application/json" \
+  -d '{"type":"OUTBOUND","product":1,"qty":"3","from_location":1}'
+
+# Levels
+curl -s http://127.0.0.1:8000/api/inventory/levels/?product=1 -H "$AUTH"

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Setup venv
+virtualenv ../venv
+
+# install dependencies
+source ../venv/bin/activate
+pip install -r requirements.txt
+
+# make migrations
+python manage.py migrate
+
+# collect static
+python manage.py collectstatic
+
+# load products (import seed data)
+python manage.py import_products static/resources/product-template.csv

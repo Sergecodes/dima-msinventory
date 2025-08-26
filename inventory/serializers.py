@@ -86,7 +86,7 @@ class StockMoveLineSerializer(serializers.ModelSerializer):
 
 
 class StockMoveBatchSerializer(serializers.ModelSerializer):
-    lines = StockMoveLineSerializer(many=True, read_only=True)
+    lines = StockMoveLineSerializer(many=True, read_only=True, source="lines.all")
     from_code = serializers.CharField(source="from_location.code", read_only=True)
     to_code = serializers.CharField(source="to_location.code", read_only=True)
 
@@ -145,3 +145,6 @@ class StockMoveBatchCreateSerializer(serializers.Serializer):
             )
         except StockError as e:
             raise serializers.ValidationError({"detail": str(e)})
+
+    def to_representation(self, instance):
+        return StockMoveBatchSerializer(instance, context=self.context).data

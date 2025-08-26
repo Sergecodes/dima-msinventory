@@ -3,12 +3,12 @@ from django.utils import timezone
 
 
 class Product(models.Model):
-    sku = models.CharField(max_length=64, unique=True)    # "Internal Reference"
+    sku = models.CharField(max_length=64, unique=True)
     name = models.CharField(max_length=255)
     barcode = models.CharField(max_length=64, blank=True, null=True)
     category = models.CharField(max_length=255, blank=True, null=True)
-    cost = models.DecimalField(max_digits=12, decimal_places=2, default=0)         # optional
-    sales_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)  # optional
+    cost = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    sales_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -19,7 +19,7 @@ class Product(models.Model):
 
 
 class Location(models.Model):
-    code = models.CharField(max_length=32, unique=True)  # e.g., MAIN, STAGING, RETURNS
+    code = models.CharField(max_length=32, unique=True)
     name = models.CharField(max_length=255)
 
     class Meta:

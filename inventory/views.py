@@ -2,7 +2,7 @@ from collections import defaultdict
 from datetime import timedelta
 
 from _decimal import Decimal
-from django.db.models import Sum
+from django.db.models import Sum, ProtectedError
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiParameter
@@ -41,6 +41,23 @@ class ProductViewSet(AuthedModelViewSet):
     filterset_fields = ["is_active", "category"]
     ordering_fields = ["sku", "name", "sales_price", "cost"]
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            return super().destroy(request, *args, **kwargs)
+        except ProtectedError:
+            refs = {
+                "stock_moves": StockMove.objects.filter(product=instance).count(),
+                "stock_batch_lines": StockMoveLine.objects.filter(product=instance).count(),
+                "stock_batches": StockMoveBatch.objects.filter(lines__product=instance).distinct().count(),
+                "inventory_levels": InventoryLevel.objects.filter(product=instance).count(),
+            }
+            msg = (
+                "Cannot delete product: it is referenced by existing stock data "
+                "(moves, batch lines, or inventory levels). Reverse/delete those first."
+            )
+            return Response({"detail": msg, "references": refs}, status=status.HTTP_409_CONFLICT)
+
 
 @extend_schema(tags=["Locations"])
 class LocationViewSet(AuthedModelViewSet):
@@ -48,6 +65,21 @@ class LocationViewSet(AuthedModelViewSet):
     serializer_class = LocationSerializer
     search_fields = ["code", "name"]
     ordering_fields = ["code", "name"]
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            return super().destroy(request, *args, **kwargs)
+        except ProtectedError:
+            refs = {
+                "stock_moves_from": StockMove.objects.filter(from_location=instance).count(),
+                "stock_moves_to": StockMove.objects.filter(to_location=instance).count(),
+                "stock_batches_from": StockMoveBatch.objects.filter(from_location=instance).count(),
+                "stock_batches_to": StockMoveBatch.objects.filter(to_location=instance).count(),
+                "inventory_levels": InventoryLevel.objects.filter(location=instance).count(),
+            }
+            msg = "Cannot delete location: it is referenced by existing stock data. Reverse moves or move stock first."
+            return Response({"detail": msg, "references": refs}, status=status.HTTP_409_CONFLICT)
 
 
 @extend_schema(tags=["Inventory Levels"])
